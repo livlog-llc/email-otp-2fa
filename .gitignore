@@ -1,3 +1,4 @@
 .idea/
 otp-core/target/
 otp-storage/target/
+otp-mail/target/
