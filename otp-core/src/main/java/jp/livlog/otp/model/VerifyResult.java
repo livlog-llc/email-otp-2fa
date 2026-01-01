@@ -14,6 +14,6 @@ public record VerifyResult(
         ALREADY_VERIFIED
     }
 
-    public static VerifyResult ok() { return new VerifyResult(true, Reason.OK); }
-    public static VerifyResult ng(Reason r) { return new VerifyResult(false, r); }
+    public static VerifyResult success() { return new VerifyResult(true, Reason.OK); }
+    public static VerifyResult failure(Reason r) { return new VerifyResult(false, r); }
 }
