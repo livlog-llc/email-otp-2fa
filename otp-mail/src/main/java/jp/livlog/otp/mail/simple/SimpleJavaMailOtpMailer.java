@@ -4,10 +4,11 @@ import jp.livlog.otp.mail.OtpMailRequest;
 import jp.livlog.otp.mail.OtpMailer;
 import jp.livlog.otp.mail.SmtpConfig;
 import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.api.mailer.Mailer;
+import org.simplejavamail.api.mailer.config.TransportStrategy;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
-import org.simplejavamail.mailer.config.TransportStrategy;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -32,9 +33,8 @@ public class SimpleJavaMailOtpMailer implements OtpMailer {
             case SMTPS -> TransportStrategy.SMTPS;
         };
 
-        MailerBuilder.MailerRegularBuilder builder =
-                MailerBuilder.withSMTPServer(cfg.host(), cfg.port(), cfg.username(), cfg.password())
-                        .withTransportStrategy(strategy);
+        var builder = MailerBuilder.withSMTPServer(cfg.host(), cfg.port(), cfg.username(), cfg.password())
+                .withTransportStrategy(strategy);
 
         // タイムアウト（JavaMailのプロパティを渡す）
         Properties props = new Properties();
@@ -60,7 +60,7 @@ public class SimpleJavaMailOtpMailer implements OtpMailer {
 
     @Override
     public void send(OtpMailRequest req) {
-        EmailBuilder eb = EmailBuilder.startingBlank()
+        EmailPopulatingBuilder eb = EmailBuilder.startingBlank()
                 .from(fromName != null ? fromName : "", fromAddress)
                 .to(req.to())
                 .withSubject(req.subject());
