@@ -44,9 +44,9 @@ public class MfaEnforcerFilter extends OncePerRequestFilter {
 
         HttpSession session = req.getSession(false);
 
-        // 未ログインなら通す（ログイン処理はアプリ側）
+        // 未ログインなら拒否（アプリ側でのログインを要求）
         if (!OtpWebSupport.isPasswordOk(session)) {
-            chain.doFilter(req, resp);
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

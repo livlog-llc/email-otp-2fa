@@ -36,8 +36,12 @@ public class OtpMfaController {
             return ResponseEntity.badRequest().build();
         }
 
-        String challengeId = service.start(userId, email);
-        session.setAttribute(OtpSessionKeys.CHALLENGE_ID, challengeId);
+        var result = service.start(userId, email);
+        if (result.status() != SpringEmailOtp2faService.StartResult.StartStatus.SENT) {
+            return ResponseEntity.status(429).build();
+        }
+
+        session.setAttribute(OtpSessionKeys.CHALLENGE_ID, result.challengeId());
         session.setAttribute(OtpSessionKeys.MFA_OK, Boolean.FALSE);
 
         return ResponseEntity.noContent().build();
@@ -51,11 +55,12 @@ public class OtpMfaController {
         }
 
         String challengeId = (String) session.getAttribute(OtpSessionKeys.CHALLENGE_ID);
-        if (challengeId == null || challengeId.isBlank() || otp == null || otp.isBlank()) {
+        String userId = OtpWebSupport.userId(session);
+        if (challengeId == null || challengeId.isBlank() || otp == null || otp.isBlank() || userId == null) {
             return redirect(req, props.getFailureRedirect());
         }
 
-        VerifyResult result = service.verify(challengeId, otp);
+        VerifyResult result = service.verify(challengeId, userId, otp);
         if (result.ok()) {
             session.setAttribute(OtpSessionKeys.MFA_OK, Boolean.TRUE);
             return redirect(req, props.getSuccessRedirect());

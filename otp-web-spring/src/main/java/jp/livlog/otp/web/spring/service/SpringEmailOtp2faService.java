@@ -13,18 +13,36 @@ import jp.livlog.otp.mail.OtpMailRequest;
 import jp.livlog.otp.mail.OtpMailer;
 import jp.livlog.otp.web.spring.mail.OtpMailTemplate;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class SpringEmailOtp2faService {
 
     private final String appName;
     private final OtpPolicy policy;
+    private final Clock clock;
     private final OtpChallengeStore store;
     private final OtpMailer mailer;
     private final OtpMailTemplate template;
 
     private final OtpIssuer issuer;
     private final OtpVerifier verifier;
+
+    public record StartResult(String challengeId, StartStatus status) {
+        public enum StartStatus {
+            SENT,
+            TOO_FREQUENT,
+            RESEND_LIMIT_EXCEEDED
+        }
+
+        public static StartResult sent(String challengeId) { return new StartResult(challengeId, StartStatus.SENT); }
+        public static StartResult tooFrequent(String challengeId) {
+            return new StartResult(challengeId, StartStatus.TOO_FREQUENT);
+        }
+        public static StartResult resendLimit(String challengeId) {
+            return new StartResult(challengeId, StartStatus.RESEND_LIMIT_EXCEEDED);
+        }
+    }
 
     public SpringEmailOtp2faService(
             String appName,
@@ -36,6 +54,7 @@ public class SpringEmailOtp2faService {
     ) {
         this.appName = Objects.requireNonNull(appName, "appName");
         this.policy = Objects.requireNonNull(policy, "policy");
+        this.clock = Objects.requireNonNull(clock, "clock");
         this.store = Objects.requireNonNull(store, "store");
         this.mailer = Objects.requireNonNull(mailer, "mailer");
         this.template = Objects.requireNonNull(template, "template");
@@ -44,9 +63,63 @@ public class SpringEmailOtp2faService {
         this.verifier = new OtpVerifier(policy, clock, new OtpHasher());
     }
 
-    /** OTP発行→保存→メール送信。challengeId を返す */
-    public String start(String userId, String email) {
+    /** OTP発行/再送→保存→メール送信。結果を返す */
+    public StartResult start(String userId, String email) {
+        Instant now = clock.now();
+        var existing = store.findLatestPendingByUser(userId);
+
+        var resendDecision = existing
+                .filter(ch -> now.isBefore(ch.expiresAt()))
+                .map(ch -> decideResend(ch, now));
+
+        if (resendDecision.isPresent()) {
+            var decision = resendDecision.get();
+            if (decision.failure() != null) {
+                return decision.failure();
+            }
+            return sendAndPersist(decision.issued(), email);
+        }
+
         var issued = issuer.issue(userId);
+        return sendAndPersist(issued, email);
+    }
+
+    /** OTP検証→更新保存。VerifyResult を返す */
+    public VerifyResult verify(String challengeId, String userId, String otpInput) {
+        var currentOpt = store.find(challengeId);
+        if (currentOpt.isEmpty()) {
+            return VerifyResult.failure(VerifyResult.Reason.NOT_FOUND);
+        }
+
+        OtpChallenge current = currentOpt.get();
+        if (!Objects.equals(userId, current.userId())) {
+            return VerifyResult.failure(VerifyResult.Reason.NOT_FOUND);
+        }
+        var update = verifier.verify(current, otpInput);
+
+        if (update.updated() != null) {
+            store.save(update.updated());
+        }
+        return update.result();
+    }
+
+    private ResendDecision decideResend(OtpChallenge challenge, Instant now) {
+        if (challenge.resends() >= policy.maxResends()) {
+            return new ResendDecision(null, StartResult.resendLimit(challenge.challengeId()));
+        }
+
+        Instant lastSentAt = challenge.lastSentAt();
+        if (lastSentAt != null) {
+            Instant nextAllowed = lastSentAt.plusSeconds(policy.minResendIntervalSeconds());
+            if (now.isBefore(nextAllowed)) {
+                return new ResendDecision(null, StartResult.tooFrequent(challenge.challengeId()));
+            }
+        }
+
+        return new ResendDecision(issuer.reissue(challenge), null);
+    }
+
+    private StartResult sendAndPersist(OtpIssuer.IssueResult issued, String email) {
         store.save(issued.challenge());
 
         var rendered = template.render(appName, issued.otp(), policy.ttlSeconds());
@@ -56,22 +129,8 @@ public class SpringEmailOtp2faService {
                 rendered.textBody(),
                 rendered.htmlBody()
         ));
-        return issued.challengeId();
+        return StartResult.sent(issued.challengeId());
     }
 
-    /** OTP検証→更新保存。VerifyResult を返す */
-    public VerifyResult verify(String challengeId, String otpInput) {
-        var currentOpt = store.find(challengeId);
-        if (currentOpt.isEmpty()) {
-            return VerifyResult.failure(VerifyResult.Reason.NOT_FOUND);
-        }
-
-        OtpChallenge current = currentOpt.get();
-        var update = verifier.verify(current, otpInput);
-
-        if (update.updated() != null) {
-            store.save(update.updated());
-        }
-        return update.result();
-    }
+    private record ResendDecision(OtpIssuer.IssueResult issued, StartResult failure) {}
 }

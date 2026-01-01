@@ -44,4 +44,24 @@ public class OtpIssuer {
         );
         return new IssueResult(challengeId, otp, c);
     }
+
+    public IssueResult reissue(OtpChallenge current) {
+        String otp = generator.generate(policy.digits());
+        String otpHash = hasher.hash(otp);
+
+        Instant now = clock.now();
+
+        OtpChallenge updated = new OtpChallenge(
+                current.challengeId(),
+                current.userId(),
+                otpHash,
+                current.expiresAt(),
+                current.attempts(),
+                current.resends() + 1,
+                now,
+                OtpChallenge.Status.PENDING
+        );
+
+        return new IssueResult(current.challengeId(), otp, updated);
+    }
 }
