@@ -1,8 +1,7 @@
 package jp.livlog.otp.sample.config;
 
+import jp.livlog.otp.mail.LoggingOtpMailer;
 import jp.livlog.otp.mail.OtpMailer;
-import jp.livlog.otp.mail.SmtpConfig;
-import jp.livlog.otp.mail.simple.SimpleJavaMailOtpMailer;
 import jp.livlog.otp.storage.OtpChallengeStore;
 import jp.livlog.otp.storage.jdbc.JdbcOtpChallengeStore;
 import org.springframework.context.annotation.Bean;
@@ -20,20 +19,23 @@ public class OtpBeansConfig {
 
     @Bean
     public OtpMailer otpMailer() {
-        // ★ 実際にメールを飛ばしたい場合はここを変更
-        return new SimpleJavaMailOtpMailer(
-                new SmtpConfig(
-                        "smtp.example.com",
-                        587,
-                        "user",
-                        "password",
-                        SmtpConfig.Transport.STARTTLS,
-                        "no-reply@example.com",
-                        "OTP Sample",
-                        10000,
-                        10000,
-                        10000
-                )
-        );
+        // デフォルトではメール送信を行わずログに出力する
+        return new LoggingOtpMailer();
+
+        // ★ 実際にメールを飛ばしたい場合は以下を有効化
+        // return new SimpleJavaMailOtpMailer(
+        //         new SmtpConfig(
+        //                 "smtp.example.com",
+        //                 587,
+        //                 "user",
+        //                 "password",
+        //                 SmtpConfig.Transport.STARTTLS,
+        //                 "no-reply@example.com",
+        //                 "OTP Sample",
+        //                 10000,
+        //                 10000,
+        //                 10000
+        //         )
+        // );
     }
 }
