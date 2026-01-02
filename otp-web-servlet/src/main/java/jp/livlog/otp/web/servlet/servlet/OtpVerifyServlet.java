@@ -31,7 +31,8 @@ public class OtpVerifyServlet extends HttpServlet {
         }
 
         String challengeId = (String) session.getAttribute(OtpSessionKeys.CHALLENGE_ID);
-        if (challengeId == null || challengeId.isBlank()) {
+        String userId = OtpWebSupport.userId(session);
+        if (challengeId == null || challengeId.isBlank() || userId == null || userId.isBlank()) {
             resp.sendRedirect(req.getContextPath() + config.failureRedirect());
             return;
         }
@@ -42,7 +43,7 @@ public class OtpVerifyServlet extends HttpServlet {
             return;
         }
 
-        VerifyResult result = service.verify(challengeId, otp);
+        VerifyResult result = service.verify(challengeId, userId, otp);
 
         if (result.ok()) {
             session.setAttribute(OtpSessionKeys.MFA_OK, Boolean.TRUE);
