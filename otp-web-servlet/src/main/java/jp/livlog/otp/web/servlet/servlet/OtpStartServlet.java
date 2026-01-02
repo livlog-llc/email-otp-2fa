@@ -33,9 +33,13 @@ public class OtpStartServlet extends HttpServlet {
             return;
         }
 
-        String challengeId = service.start(userId, email);
+        var result = service.start(userId, email);
+        if (result.status() != ServletEmailOtp2faService.StartResult.StartStatus.SENT) {
+            resp.sendError(429);
+            return;
+        }
 
-        session.setAttribute(OtpSessionKeys.CHALLENGE_ID, challengeId);
+        session.setAttribute(OtpSessionKeys.CHALLENGE_ID, result.challengeId());
         session.setAttribute(OtpSessionKeys.MFA_OK, Boolean.FALSE);
 
         resp.setStatus(204); // No Content
