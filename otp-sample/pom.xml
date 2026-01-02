@@ -43,6 +43,12 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
+    <!-- DataSource auto-configuration for in-memory H2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
     <!-- H2は sample にだけ入れる（core/storageを汚さない） -->
     <dependency>
       <groupId>com.h2database</groupId>
