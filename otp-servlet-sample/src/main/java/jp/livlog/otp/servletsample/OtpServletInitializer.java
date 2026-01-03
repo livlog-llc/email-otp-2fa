@@ -1,7 +1,6 @@
 package jp.livlog.otp.servletsample;
 
 import java.sql.SQLException;
-import java.time.Clock;
 import java.util.EnumSet;
 
 import javax.sql.DataSource;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import jp.livlog.otp.mail.LoggingOtpMailer;
 import jp.livlog.otp.mail.OtpMailer;
+import jp.livlog.otp.policy.Clock;
 import jp.livlog.otp.policy.OtpPolicy;
 import jp.livlog.otp.storage.OtpChallengeStore;
 import jp.livlog.otp.storage.jdbc.JdbcOtpChallengeStore;
