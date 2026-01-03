@@ -1,6 +1,8 @@
 package jp.livlog.otp.servletsample;
 
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.EnumSet;
 
 import javax.sql.DataSource;
@@ -9,7 +11,6 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
-import org.h2.jdbcx.JdbcDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +42,11 @@ public class OtpServletInitializer implements ServletContextListener {
         OtpPolicy policy = OtpPolicy.defaultPolicy();
 
         // 永続化用DataSource（インメモリH2）
-        JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:otp-servlet-sample;DB_CLOSE_DELAY=-1");
-        ds.setUser("sa");
-        ds.setPassword("");
-        this.dataSource = ds;
-        initializeSchema(ds);
+        this.dataSource = createInMemoryDataSource();
+        initializeSchema(this.dataSource);
 
         // 永続化・メール送信
-        OtpChallengeStore store = new JdbcOtpChallengeStore(ds);
+        OtpChallengeStore store = new JdbcOtpChallengeStore(this.dataSource);
         OtpMailer mailer = new LoggingOtpMailer();
 
         // MFAサービス
@@ -113,6 +110,83 @@ public class OtpServletInitializer implements ServletContextListener {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to initialize schema", e);
+        }
+    }
+
+    private static DataSource createInMemoryDataSource() {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("H2 driver not found. Ensure com.h2database:h2 is on the classpath.", e);
+        }
+
+        return new DriverManagerDataSource(
+                "jdbc:h2:mem:otp-servlet-sample;DB_CLOSE_DELAY=-1",
+                "sa",
+                ""
+        );
+    }
+
+    private static class DriverManagerDataSource implements DataSource {
+
+        private final String url;
+
+        private final String username;
+
+        private final String password;
+
+        DriverManagerDataSource(String url, String username, String password) {
+            this.url = url;
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        public java.sql.Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(this.url, this.username, this.password);
+        }
+
+        @Override
+        public java.sql.Connection getConnection(String username, String password) throws SQLException {
+            return DriverManager.getConnection(this.url, username, password);
+        }
+
+        @Override
+        public java.io.PrintWriter getLogWriter() throws SQLException {
+            return DriverManager.getLogWriter();
+        }
+
+        @Override
+        public void setLogWriter(java.io.PrintWriter out) throws SQLException {
+            DriverManager.setLogWriter(out);
+        }
+
+        @Override
+        public void setLoginTimeout(int seconds) throws SQLException {
+            DriverManager.setLoginTimeout(seconds);
+        }
+
+        @Override
+        public int getLoginTimeout() throws SQLException {
+            return DriverManager.getLoginTimeout();
+        }
+
+        @Override
+        public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+            return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+        }
+
+        @Override
+        public <T> T unwrap(Class<T> iface) throws SQLException {
+            if (isWrapperFor(iface)) {
+                return iface.cast(this);
+            }
+            throw new SQLException("No wrapper for " + iface.getName());
+        }
+
+        @Override
+        public boolean isWrapperFor(Class<?> iface) {
+            return iface.isInstance(this);
         }
     }
 }
