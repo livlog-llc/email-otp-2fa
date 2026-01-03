@@ -17,6 +17,10 @@ Servlet API と `otp-web-servlet` を使ったシンプルなメールOTP 2FA �
    - パスワード: `password`
 4. 「確認コードを送信」を押すと OTP が生成され、コンソールログに出力されます。出力された6桁のコードを入力すると `/app` に遷移します。
 
+### Tomcat でアノテーションが拾われない場合
+
+IntelliJ IDEA + SmartTomcat など、クラスを `WEB-INF/classes` ではなくアプリのクラスパス（`target/classes` 以外）へ載せて配備するランタイムでは、Tomcat のデフォルト設定だとクラスパス上のアノテーションスキャンが無効になり、`@WebServlet` / `@WebListener` が自動登録されません。`src/main/webapp/META-INF/context.xml` で `<JarScanner scanClassPath="true" />` を有効にしてあるので、そのままデプロイすればアノテーションによるエンドポイント登録が機能します。
+
 ## 実装のポイント
 
 - `OtpServletInitializer` が `ServletContextListener` として `OtpStartServlet` / `OtpVerifyServlet` / `MfaEnforcerFilter` を登録します。
