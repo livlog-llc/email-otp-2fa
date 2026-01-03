@@ -19,14 +19,17 @@
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-web-servlet</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-storage</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-mail</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
