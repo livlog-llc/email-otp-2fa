@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- SmartTomcatなどが WEB-INF/classes ではなくクラスパス上にクラスを配置する場合、
+         デフォルト設定ではアノテーションスキャンの対象外になるため明示的に有効化する -->
+    <JarScanner scanClassPath="true" />
+</Context>

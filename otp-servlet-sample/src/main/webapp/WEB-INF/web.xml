@@ -4,4 +4,46 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
   <display-name>otp-servlet-sample</display-name>
+
+  <!-- アノテーションスキャンが無効な環境(SmartTomcatなど)でも確実に起動するよう明示的に登録する -->
+  <listener>
+    <listener-class>jp.livlog.otp.servletsample.OtpServletInitializer</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>indexServlet</servlet-name>
+    <servlet-class>jp.livlog.otp.servletsample.IndexServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>indexServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>loginServlet</servlet-name>
+    <servlet-class>jp.livlog.otp.servletsample.LoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>loginServlet</servlet-name>
+    <url-pattern>/login</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>mfaPageServlet</servlet-name>
+    <servlet-class>jp.livlog.otp.servletsample.MfaPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mfaPageServlet</servlet-name>
+    <url-pattern>/mfa</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>appServlet</servlet-name>
+    <servlet-class>jp.livlog.otp.servletsample.AppServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>appServlet</servlet-name>
+    <url-pattern>/app</url-pattern>
+  </servlet-mapping>
 </web-app>

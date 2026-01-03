@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
 
 import org.h2.jdbcx.JdbcDataSource;
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import jp.livlog.otp.web.servlet.service.ServletEmailOtp2faService;
 import jp.livlog.otp.web.servlet.servlet.OtpStartServlet;
 import jp.livlog.otp.web.servlet.servlet.OtpVerifyServlet;
 
-@WebListener
 public class OtpServletInitializer implements ServletContextListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OtpServletInitializer.class);
