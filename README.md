@@ -9,6 +9,7 @@
 - **otp-web-spring**: Spring Boot / MVC 向けの組み込み用ライブラリ（Controller / Filter / Auto Configuration）。
 - **otp-web-servlet**: Servlet ベースのアプリ向けの組み込み用ライブラリ（HttpServlet / Filter）。
 - **otp-sample**: 上記ライブラリを組み込んだサンプル（Spring Boot）アプリ。参考実装として利用できます。
+- **otp-servlet-sample**: Servlet API のみで構成したシンプルなサンプルアプリ。Jettyで手軽に動作確認できます。
 
 ## 開発環境の前提
 - Java 17
@@ -52,6 +53,18 @@
 1. 依存に `otp-web-servlet` を追加します。
 2. アプリ側で `OtpChallengeStore` と `OtpMailer` を生成し、`ServletEmailOtp2faService` に渡した上で、`OtpStartServlet` と `OtpVerifyServlet`、`MfaEnforcerFilter` をアプリの `ServletContext` に登録します。
 3. セッションには `USER_ID` / `USER_EMAIL` / `PASSWORD_OK=true` をログイン成功時に必ず保存してください。MFA未完了の場合は Filter が `/mfa` にリダイレクトします。
+
+### Servlet サンプル（otp-servlet-sample）
+1. 依存を含めてビルドします。
+   ```bash
+   mvn -pl otp-servlet-sample -am clean package
+   ```
+2. Jetty でサンプルを起動します。
+   ```bash
+   mvn -pl otp-servlet-sample -am jetty:run
+   ```
+3. ブラウザで `http://localhost:8080/login` を開き、ユーザーID `user` / パスワード `password` でログインします。
+4. 「確認コードを送信」を押すと OTP が生成され、コンソールログに出力されます。出力された6桁のコードを入力すると `/app` に遷移します。
 
 ### 下位モジュールの直接利用
 - 独自フレームワークで使いたい場合は `otp-core`（ポリシー・検証）、`otp-storage`（永続化）、`otp-mail`（送信）を直接組み合わせて実装できます。`otp-sample` や Web向けモジュールのコードが組み込み例として参考になります。

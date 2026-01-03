@@ -37,6 +37,7 @@
     <module>otp-web-spring</module>
     <module>otp-web-servlet</module>
     <module>otp-sample</module>
+    <module>otp-servlet-sample</module>
   </modules>
 
   <!-- Spring Boot BOM（Spring系モジュールだけが import して使う） -->
