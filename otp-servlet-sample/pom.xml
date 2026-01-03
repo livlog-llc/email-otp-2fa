@@ -40,10 +40,12 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
@@ -53,14 +55,29 @@
         <directory>src/main/resources</directory>
       </resource>
       <resource>
-        <directory>src/main/webapp/WEB-INF</directory>
-        <targetPath>WEB-INF</targetPath>
+        <directory>src/main/webapp</directory>
         <includes>
-          <include>web.xml</include>
+          <include>WEB-INF/web.xml</include>
+          <include>META-INF/context.xml</include>
         </includes>
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.4.0</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+          <archive>
+            <manifestEntries>
+              <Implementation-Title>${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
