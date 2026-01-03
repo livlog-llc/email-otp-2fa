@@ -22,3 +22,5 @@ otp-web-servlet/.classpath
 otp-web-servlet/.project
 otp-web-spring/.classpath
 otp-web-spring/.project
+otp-spring-sample/.classpath
+otp-spring-sample/.gitignore
