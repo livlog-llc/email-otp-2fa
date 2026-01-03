@@ -36,7 +36,7 @@
     <module>otp-mail</module>
     <module>otp-web-spring</module>
     <module>otp-web-servlet</module>
-    <module>otp-sample</module>
+    <module>otp-spring-sample</module>
     <module>otp-servlet-sample</module>
   </modules>
 

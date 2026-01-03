@@ -8,7 +8,7 @@
 - **otp-mail**: OTPメール送信用のインターフェースと実装（Simple Java Mail / ログ出力など）。
 - **otp-web-spring**: Spring Boot / MVC 向けの組み込み用ライブラリ（Controller / Filter / Auto Configuration）。
 - **otp-web-servlet**: Servlet ベースのアプリ向けの組み込み用ライブラリ（HttpServlet / Filter）。
-- **otp-sample**: 上記ライブラリを組み込んだサンプル（Spring Boot）アプリ。参考実装として利用できます。
+- **otp-spring-sample**: 上記ライブラリを組み込んだサンプル（Spring Boot）アプリ。参考実装として利用できます。
 - **otp-servlet-sample**: Servlet API のみで構成したシンプルなサンプルアプリ。Jettyで手軽に動作確認できます。
 
 ## 開発環境の前提
@@ -17,11 +17,11 @@
 
 リポジトリ直下で `mvn clean install` を実行すると全モジュールをビルドできます。個別モジュールだけビルドしたい場合は `-pl <module> -am` を付けてください。
 
-## otp-sample の実行方法
+## otp-spring-sample の実行方法
 1. 依存を含めてビルドし、そのまま Spring Boot を起動します。
    ```bash
-   mvn -pl otp-sample -am clean package
-   mvn -pl otp-sample spring-boot:run
+   mvn -pl otp-spring-sample -am clean package
+   mvn -pl otp-spring-sample spring-boot:run
    ```
 2. ブラウザで `http://localhost:8080/login` を開き、以下の固定ユーザーでログインします。
    - ユーザーID: `user`
@@ -30,8 +30,8 @@
 
 ### サンプルの設定ポイント
 - デフォルトのデータベースはインメモリH2で、`schema.sql` が自動適用されます（表定義の参考にもなります）。
-- メール送信は `LoggingOtpMailer` によりコンソールに出力するだけです。SMTPで実送信したい場合は `otp-sample/src/main/java/jp/livlog/otp/sample/config/OtpBeansConfig.java` のコメントを外して `SimpleJavaMailOtpMailer` を有効化します。
-- Webパスやリダイレクト先は `otp-sample/src/main/resources/application.yml` で設定しています。フィルタ保護パスの例やリダイレクト先の変更方法の参考にしてください。
+- メール送信は `LoggingOtpMailer` によりコンソールに出力するだけです。SMTPで実送信したい場合は `otp-spring-sample/src/main/java/jp/livlog/otp/sample/config/OtpBeansConfig.java` のコメントを外して `SimpleJavaMailOtpMailer` を有効化します。
+- Webパスやリダイレクト先は `otp-spring-sample/src/main/resources/application.yml` で設定しています。フィルタ保護パスの例やリダイレクト先の変更方法の参考にしてください。
 
 ## プロジェクトへの導入方法
 ### Spring Boot / Spring MVC（otp-web-spring）
@@ -67,9 +67,9 @@
 4. 「確認コードを送信」を押すと OTP が生成され、コンソールログに出力されます。出力された6桁のコードを入力すると `/app` に遷移します。
 
 ### 下位モジュールの直接利用
-- 独自フレームワークで使いたい場合は `otp-core`（ポリシー・検証）、`otp-storage`（永続化）、`otp-mail`（送信）を直接組み合わせて実装できます。`otp-sample` や Web向けモジュールのコードが組み込み例として参考になります。
+- 独自フレームワークで使いたい場合は `otp-core`（ポリシー・検証）、`otp-storage`（永続化）、`otp-mail`（送信）を直接組み合わせて実装できます。`otp-spring-sample` や Web向けモジュールのコードが組み込み例として参考になります。
 
 ## 参考資料
 - Spring Boot 向けの詳細な組み込み手順は [`otp-web-spring/README.md`](otp-web-spring/README.md) を参照してください。
 - Servlet 向けの詳細な組み込み手順は [`otp-web-servlet/README.md`](otp-web-servlet/README.md) を参照してください。
-- 完成形の挙動を確認したい場合は [`otp-sample`](otp-sample) を起動してブラウザで動作を確認してください。
+- 完成形の挙動を確認したい場合は [`otp-spring-sample`](otp-spring-sample) を起動してブラウザで動作を確認してください。

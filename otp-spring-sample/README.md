@@ -1,6 +1,6 @@
-# otp-sample
+# otp-spring-sample
 
-`otp-sample` は `otp-web-spring` を使った Spring Boot アプリのサンプルです。固定ユーザーでログインした後にメールOTPによるMFAを行う最小構成を確認できます。
+`otp-spring-sample` は `otp-web-spring` を使った Spring Boot アプリのサンプルです。固定ユーザーでログインした後にメールOTPによるMFAを行う最小構成を確認できます。
 
 ## 前提
 - Java 17
@@ -9,10 +9,10 @@
 ## 起動方法
 ```bash
 # 依存を含めてビルド
-mvn -pl otp-sample -am clean package
+mvn -pl otp-spring-sample -am clean package
 
 # 開発サーバーの起動（デフォルト: http://localhost:8080）
-mvn -pl otp-sample spring-boot:run
+mvn -pl otp-spring-sample spring-boot:run
 ```
 
 ## 操作手順

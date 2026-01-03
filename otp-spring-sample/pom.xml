@@ -10,10 +10,10 @@
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>otp-sample</artifactId>
+  <artifactId>otp-spring-sample</artifactId>
   <packaging>jar</packaging>
 
-  <name>otp-sample</name>
+  <name>otp-spring-sample</name>
 
   <dependencies>
     <dependency>
