@@ -19,14 +19,17 @@
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-web-servlet</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-storage</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-mail</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -45,6 +48,18 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/webapp/WEB-INF</directory>
+        <targetPath>WEB-INF</targetPath>
+        <includes>
+          <include>web.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
