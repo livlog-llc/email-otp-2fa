@@ -45,7 +45,7 @@
 
 5. **タグとブランチのプッシュ、GitHub Release 作成**
    - `git push origin <ブランチ>` / `git push origin v<version>`
-   - GitHub 上で該当タグの Release を公開し、JitPack のビルドをトリガーする
+   - GitHub 上で該当タグの Release を公開する
 
 ## otp-spring-sample の実行方法
 1. 依存を含めてビルドし、そのまま Spring Boot を起動します。
@@ -103,3 +103,6 @@
 - Spring Boot 向けの詳細な組み込み手順は [`otp-web-spring/README.md`](otp-web-spring/README.md) を参照してください。
 - Servlet 向けの詳細な組み込み手順は [`otp-web-servlet/README.md`](otp-web-servlet/README.md) を参照してください。
 - 完成形の挙動を確認したい場合は [`otp-spring-sample`](otp-spring-sample) を起動してブラウザで動作を確認してください。
+
+## Maven 対応に関する提案
+JitPack 設定を削除した上で、Maven Central への公開を前提にした配布方針を検討しています。詳細は [`docs/MAVEN_RELEASE_PROPOSAL.md`](docs/MAVEN_RELEASE_PROPOSAL.md) を参照してください。また、親POMを利用せずに JitPack から子モジュールを個別取得する方法は [`docs/JITPACK_MULTI_MODULE_GUIDE.md`](docs/JITPACK_MULTI_MODULE_GUIDE.md) にまとめています。JitPack に 5 つの子モジュールを限定してリリースする具体的な手順は [`docs/JITPACK_RELEASE_STEPS.md`](docs/JITPACK_RELEASE_STEPS.md) を参照してください。
