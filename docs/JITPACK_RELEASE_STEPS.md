@@ -12,10 +12,10 @@
    ```bash
    mvn -DskipTests -pl otp-core,otp-mail,otp-storage,otp-web-servlet,otp-web-spring -am clean install
    ```
-2. リリース用の Git タグを作成して push します（例: `v0.1.7`）。
+2. リリース用の Git タグを作成して push します（例: `v0.1.8`）。
    ```bash
-   git tag v0.1.7
-   git push origin v0.1.7
+   git tag v0.1.8
+   git push origin v0.1.8
    ```
 3. JitPack のビルドを確認します。
    - https://jitpack.io/#<GitHubユーザー名>/email-otp-2fa にアクセスし、作成したタグのビルドを開始します。
@@ -26,7 +26,7 @@
      <dependency>
        <groupId>com.github.<GitHubユーザー名></groupId>
        <artifactId>otp-core</artifactId>
-       <version>v0.1.7</version>
+       <version>v0.1.8</version>
      </dependency>
      ```
    - プラグインとして配布する場合は `pluginRepositories` に JitPack を登録し、同じ座標を指定します。

@@ -3,7 +3,7 @@
 
   <groupId>jp.livlog</groupId>
   <artifactId>otp-web-spring</artifactId>
-  <version>0.1.7</version>
+  <version>0.1.8</version>
   <packaging>jar</packaging>
 
   <name>otp-web-spring</name>
