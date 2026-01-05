@@ -15,6 +15,12 @@
 
   <name>otp-mail</name>
 
+  <scm>
+    <url>https://github.com/livlog/email-otp-2fa</url>
+    <connection>scm:git:git@github.com:livlog/email-otp-2fa.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>jp.livlog</groupId>
