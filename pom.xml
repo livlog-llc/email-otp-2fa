@@ -140,6 +140,7 @@
             <goals>deploy</goals>
             <scmCommentPrefix>[Release]</scmCommentPrefix>
             <preparationGoals>clean verify</preparationGoals>
+            <pushChanges>false</pushChanges>
           </configuration>
         </plugin>
 
