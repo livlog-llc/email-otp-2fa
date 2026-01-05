@@ -17,6 +17,36 @@
 
 リポジトリ直下で `mvn clean install` を実行すると全モジュールをビルドできます。個別モジュールだけビルドしたい場合は `-pl <module> -am` を付けてください。
 
+### 親POMのインストールとリリース手順
+マルチモジュール構成のため、まず親POMをローカルリポジトリにインストールしてから、Maven Release Plugin を使ってタグ付け・デプロイを行います。
+
+1. **親POMをインストール**（プロジェクトルートで実行）
+   ```bash
+   mvn -N clean install
+   ```
+   これで `jp.livlog:email-otp-2fa:0.1.0-SNAPSHOT` の親POMがローカルに登録され、個別モジュールのビルドや release:prepare で参照できるようになります。
+
+2. **事前確認**
+   - `git status` がクリーンであることを確認
+   - SNAPSHOT バージョンのままになっているか確認
+   - ルートディレクトリで `mvn clean install` を一度実行してビルドを通しておく
+
+3. **リリース準備（バージョン確定とタグ作成）**
+   ```bash
+   mvn release:prepare
+   ```
+   ルート `pom.xml` の `<scm>` 設定を基に、タグ（形式 `v<version>`）とリリース用コミットが生成され、`release.properties` が作成されます。
+
+4. **リリース実行（デプロイ）**
+   ```bash
+   mvn release:perform
+   ```
+   `release.properties` に記録された SCM URL から再チェックアウトし、`deploy` ゴールまで実行します。`release:prepare` を先に実行していない場合は `No SCM URL was provided to perform the release` のようなエラーになるため、必ず手順3を完了させてください。
+
+5. **タグとブランチのプッシュ、GitHub Release 作成**
+   - `git push origin <ブランチ>` / `git push origin v<version>`
+   - GitHub 上で該当タグの Release を公開し、JitPack のビルドをトリガーする
+
 ## otp-spring-sample の実行方法
 1. 依存を含めてビルドし、そのまま Spring Boot を起動します。
    ```bash
