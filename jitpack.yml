@@ -1,0 +1,4 @@
+jdk:
+  - openjdk17
+install:
+  - mvn -DskipTests -pl otp-core,otp-mail,otp-storage,otp-web-servlet,otp-web-spring -am install
