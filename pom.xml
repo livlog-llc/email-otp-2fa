@@ -4,7 +4,7 @@
 
   <groupId>jp.livlog</groupId>
   <artifactId>email-otp-2fa</artifactId>
-  <version>0.1.6-SNAPSHOT</version>
+  <version>0.1.7</version>
   <packaging>pom</packaging>
 
   <name>email-otp-2fa</name>
