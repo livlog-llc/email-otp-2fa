@@ -13,6 +13,22 @@
   <name>email-otp-2fa</name>
   <description>Email OTP based 2FA shared components</description>
 
+  <url>https://github.com/livlog/email-otp-2fa</url>
+
+  <scm>
+    <url>https://github.com/livlog/email-otp-2fa</url>
+    <connection>scm:git:git@github.com:livlog/email-otp-2fa.git</connection>
+    <developerConnection>scm:git:https://github.com/livlog/email-otp-2fa.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <properties>
     <!-- ★ Java 17 固定 -->
     <maven.compiler.release>17</maven.compiler.release>
@@ -111,6 +127,20 @@
           <version>3.13.0</version>
           <configuration>
             <release>${maven.compiler.release}</release>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.1</version>
+          <configuration>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <releaseProfiles>release</releaseProfiles>
+            <goals>deploy</goals>
+            <scmCommentPrefix>[Release]</scmCommentPrefix>
+            <preparationGoals>clean verify</preparationGoals>
           </configuration>
         </plugin>
 
