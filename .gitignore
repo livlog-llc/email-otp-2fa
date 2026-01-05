@@ -24,3 +24,5 @@ otp-web-spring/.classpath
 otp-web-spring/.project
 otp-spring-sample/.classpath
 otp-spring-sample/.gitignore
+**/release.properties
+**/pom.xml.releaseBackup

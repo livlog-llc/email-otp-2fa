@@ -21,13 +21,6 @@
     <tag>HEAD</tag>
   </scm>
 
-  <repositories>
-    <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-    </repository>
-  </repositories>
-
   <properties>
     <!-- ★ Java 17 固定 -->
     <maven.compiler.release>17</maven.compiler.release>
@@ -140,6 +133,7 @@
             <goals>deploy</goals>
             <scmCommentPrefix>[Release]</scmCommentPrefix>
             <preparationGoals>clean verify</preparationGoals>
+            <pushChanges>false</pushChanges>
           </configuration>
         </plugin>
 
