@@ -47,6 +47,45 @@
    - `git push origin <ブランチ>` / `git push origin v<version>`
    - GitHub 上で該当タグの Release を公開する
 
+## 実運用を意識したセットアップ手順
+- **データベース（必須）**: 本番では永続DBを必ず用意し、以下のDDLを適用してください。
+
+  ```sql
+  -- otp-storage/create.sql に含まれるDDL
+  CREATE TABLE IF NOT EXISTS otp_challenges (
+    challenge_id VARCHAR(64) PRIMARY KEY,
+    user_id      VARCHAR(128) NOT NULL,
+    otp_hash     VARCHAR(512) NOT NULL,
+    expires_at   TIMESTAMP NOT NULL,
+    attempts     INT NOT NULL,
+    resends      INT NOT NULL,
+    last_sent_at TIMESTAMP NULL,
+    status       VARCHAR(16) NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_otp_user_status_sent
+    ON otp_challenges(user_id, status, last_sent_at);
+  ```
+
+  H2/PostgreSQL/MySQL などの主要RDBでそのまま動きます。アプリ側は `spring.datasource.url`（または Servlet の DataSource）、
+  `spring.datasource.username` / `spring.datasource.password` を実環境の値に設定してください。
+
+- **メール送信（必須）**: `OtpMailer` の実装を SMTP で送信できる `SimpleJavaMailOtpMailer` などに差し替え、
+  ホスト・ポート・認証情報を設定します。DKIM/SPF の整備や送信元アドレスの統一など、運用ポリシーにも合わせてください。
+
+- **アプリ統合フロー**: 既存ログインでID/パスワードの検証が完了したタイミングで
+  `OtpWebSupport.markPasswordOk(session, userId, email)`（Springの場合）や
+  セッション属性 `USER_ID` / `USER_EMAIL` / `PASSWORD_OK=true`（Servletの場合）をセットし、
+  `/mfa` へ遷移させます。OTP検証成功後は `MFA_OK` がセットされ保護パスへアクセスできます。
+
+- **セキュリティ設定の例**:
+  - OTP有効期限・最大再送回数・試行上限は `otp-core` のポリシー値で調整できます。
+  - フィルタで保護するパスを `/app/**` のように明示し、管理系と画面系を網羅してください。
+  - 監査ログにユーザーID・送信先ドメイン・検証結果を残すと運用時のトレースが容易です。
+
+- **ヘルスチェックとメトリクス**: DB接続エラーやメール送信失敗を検知できるよう、
+  Spring Actuator などのヘルスチェックに DataSource / Mail 連携を含めることを推奨します。
+
 ## otp-spring-sample の実行方法
 1. 依存を含めてビルドし、そのまま Spring Boot を起動します。
    ```bash
@@ -59,8 +98,8 @@
 3. 「Send OTP」を押して確認コードを送信し、ログ出力されたコードで `/mfa/verify` を通過すると `/app` に遷移します。
 
 ### サンプルの設定ポイント
-- デフォルトのデータベースはインメモリH2で、`schema.sql` が自動適用されます（表定義の参考にもなります）。
-- メール送信は `LoggingOtpMailer` によりコンソールに出力するだけです。SMTPで実送信したい場合は `otp-spring-sample/src/main/java/jp/livlog/otp/sample/config/OtpBeansConfig.java` のコメントを外して `SimpleJavaMailOtpMailer` を有効化します。
+- デフォルトのデータベースはインメモリH2で、`schema.sql` が自動適用されます（本番では上記DDLを外部DBに適用してください）。
+- メール送信は `LoggingOtpMailer` によりコンソールに出力するだけです。SMTPで実送信したい場合は `otp-spring-sample/src/main/java/jp/livlog/otp/sample/config/OtpBeansConfig.java` のコメントを外して `SimpleJavaMailOtpMailer` を有効化し、接続情報を設定してください。
 - Webパスやリダイレクト先は `otp-spring-sample/src/main/resources/application.yml` で設定しています。フィルタ保護パスの例やリダイレクト先の変更方法の参考にしてください。
 
 ## プロジェクトへの導入方法
