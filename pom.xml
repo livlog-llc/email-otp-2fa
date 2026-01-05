@@ -134,6 +134,7 @@
             <scmCommentPrefix>[Release]</scmCommentPrefix>
             <preparationGoals>clean verify</preparationGoals>
             <pushChanges>false</pushChanges>
+            <arguments>-pl !otp-servlet-sample,!otp-spring-sample</arguments>
           </configuration>
         </plugin>
 
