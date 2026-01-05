@@ -4,7 +4,7 @@
   <parent>
     <groupId>jp.livlog</groupId>
     <artifactId>email-otp-2fa</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -17,7 +17,7 @@
   <scm>
     <url>https://github.com/livlog/email-otp-2fa</url>
     <connection>scm:git:https://github.com/livlog/email-otp-2fa.git</connection>
-    <tag>v0.1.3</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
