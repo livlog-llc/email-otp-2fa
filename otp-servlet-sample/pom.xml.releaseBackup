@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>jp.livlog</groupId>
     <artifactId>email-otp-2fa</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>otp-servlet-sample</artifactId>
@@ -16,24 +18,24 @@
   <scm>
     <url>https://github.com/livlog/email-otp-2fa</url>
     <connection>scm:git:https://github.com/livlog/email-otp-2fa.git</connection>
-    <tag>v0.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-web-servlet</artifactId>
-      <version>0.1.0</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-storage</artifactId>
-      <version>0.1.0</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jp.livlog</groupId>
       <artifactId>otp-mail</artifactId>
-      <version>0.1.0</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
